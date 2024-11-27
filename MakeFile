@@ -1,0 +1,22 @@
+# Compiler and runtime
+JAVAC = javac
+JAVA = java
+
+# Source files directory
+SRC_DIR = jlox
+# Package name
+PACKAGE = jlox
+# Main class (fully qualified)
+MAIN_CLASS = $(PACKAGE).Lox
+
+# Compile target
+compile:
+	$(JAVAC) -d . $(SRC_DIR)/*.java
+
+# Run the program
+run: compile
+	$(JAVA) $(MAIN_CLASS)
+
+# Clean up .class files
+clean:
+	rm -f $(SRC_DIR)/*.class
