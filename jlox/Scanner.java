@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import static jlox.TokenType.*;
 
 class Scanner {
@@ -56,66 +55,50 @@ class Scanner {
     private void scanToken() {
         char c = advance();
         switch(c) {
-            case '(': addToken(LEFT_PAREN); break;
-            case ')': addToken(RIGHT_PAREN); break;
-            case '{': addToken(LEFT_BRACE); break;
-            case '}': addToken(RIGHT_BRACE); break;
-            case ',': addToken(COMMA); break;
-            case '.': addToken(DOT); break;
-            case '-': addToken(MINUS); break;
-            case '+': addToken(PLUS); break;
-            case ';': addToken(SEMICOLON); break;
-            case '*': addToken(STAR); break;
-            case '!':
-                addToken(match('=') ? BANG_EQUAL : BANG);
-                break;
-            case '=':
-                addToken(match('=') ? EQUAL_EQUAL : EQUAL);
-                break;
+            case '(' -> addToken(LEFT_PAREN);
+            case ')' -> addToken(RIGHT_PAREN);
+            case '{' -> addToken(LEFT_BRACE);
+            case '}' -> addToken(RIGHT_BRACE);
+            case ',' -> addToken(COMMA);
+            case '.' -> addToken(DOT);
+            case '-' -> addToken(MINUS);
+            case '+' -> addToken(PLUS);
+            case ';' -> addToken(SEMICOLON);
+            case '*' -> addToken(STAR);
+            case '!' -> addToken(match('=') ? BANG_EQUAL : BANG);
+            case '=' -> addToken(match('=') ? EQUAL_EQUAL : EQUAL);
 
-            case '<':
-                addToken(match('=') ? LESS_EQUAL : LESS);
-                break;
+            case '<' -> addToken(match('=') ? LESS_EQUAL : LESS);
 
-            case '>':
-                addToken(match('=') ? GREATER_EQUAL : GREATER);
-                break;
+            case '>' -> addToken(match('=') ? GREATER_EQUAL : GREATER);
                 
-            case '/':
+            case '/' -> {
                 if(match('/')) {
                     // A comment goes untile end of line
                     while(peek() != '\n' && !isAtEnd()) advance();
                 } else {
                     addToken(SLASH);
                 }
-                break;
+            }
 
-            case ' ':
-            case '\r':
-            case '\t':
-                // Ignore whitespace
-                break;
+            case ' ', '\r', '\t' -> {
+            }
+            case '\n' -> line++;
+            case '"' -> string();
             
-            case '\n':
-                line++;
-                break;
-                
-            case '"': string(); break;
-
-            default:
-                if(isDigit(c)) {
+            default -> {
+                if (isDigit(c)) {
                     number();
                 } else if (isAlpha(c)) {
                     identifier();
-                }
-                else {
-
+                } else {
                     Lox.error(line, "Unexpected Character.");
-                    break;
                 }
+            }
 
         }
-    }
+        // Ignore whitespace
+            }
     private  void identifier() {
         while(isAlphaNumeric(peek())) advance();
         String text = source.substring(start, current);
